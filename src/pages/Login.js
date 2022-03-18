@@ -83,7 +83,7 @@ class Login extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchFormData: (state) => dispatch(sendEmail(state)),
+  dispatchFormData: (email) => dispatch(sendEmail(email)),
 });
 
 Login.propTypes = {
