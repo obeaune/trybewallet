@@ -6,9 +6,8 @@ class Header extends Component {
   render() {
     const { email, expensesFromState } = this.props;
     const sumExpenses = expensesFromState
-    // ([curr.currency]>>>.<<<ask) é o valor em dolar
-      .reduce((prev, curr) => prev + curr.value
-        * (curr.exchangeRates[curr.currency].ask), 0);
+      .reduce((prev, curr) => prev + parseFloat(curr.value)
+        * parseFloat(curr.exchangeRates[curr.currency].ask), 0).toFixed(2);
     return (
       <header>
         <p data-testid="email-field">{ email }</p>

@@ -7,9 +7,9 @@ class FormExpense extends Component {
   state = {
     value: '',
     description: '',
-    currency: '',
-    method: '',
-    tag: '',
+    currency: 'USD',
+    method: 'Dinheiro',
+    tag: 'Alimentação',
   };
 
   fetchKeysAPI = async () => {
@@ -81,6 +81,7 @@ class FormExpense extends Component {
             <select
               placeholder="choose one"
               data-testid="currency-input"
+              id="currency-input"
               name="currency"
               value={ currency }
               onChange={ this.handleChange }
@@ -102,6 +103,7 @@ class FormExpense extends Component {
             <select
               data-testid="method-input"
               name="method"
+              id="method-input"
               value={ method }
               onChange={ this.handleChange }
             >
@@ -115,6 +117,7 @@ class FormExpense extends Component {
             Categoria
             <select
               data-testid="tag-input"
+              id="tag-input"
               name="tag"
               value={ tag }
               onChange={ this.handleChange }
