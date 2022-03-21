@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { deleteExpense } from '../actions/index';
 
 class ExpensesTable extends React.Component {
-  handleClick = ({ target }) => {
+  handleClick = (id) => {
     const { dispatchForDelete } = this.props;
-    dispatchForDelete(target.id);
+    dispatchForDelete(id);
   };
 
   render() {
@@ -28,19 +28,25 @@ class ExpensesTable extends React.Component {
         </thead>
 
         <tbody>
-          { expensesFromState.map((item) => (
-            <tr key={ item.id }>
-              <td>{ item.description }</td>
-              <td>{ item.tag }</td>
-              <td>{ item.method }</td>
-              <td>{ parseFloat(item.value).toFixed(2) }</td>
-              <td>{ item.exchangeRates[item.currency].name }</td>
-              <td>{ parseFloat(item.exchangeRates[item.currency].ask).toFixed(2) }</td>
+          { expensesFromState.map((expense) => (
+            <tr
+              key={ expense.id }
+              id={ expense.id }
+            >
+              <td>{ expense.description }</td>
+              <td>{ expense.tag }</td>
+              <td>{ expense.method }</td>
+              <td>{ parseFloat(expense.value).toFixed(2) }</td>
+              <td>{ expense.exchangeRates[expense.currency].name }</td>
+              <td>
+                { parseFloat(expense.exchangeRates[expense.currency].ask)
+                  .toFixed(2) }
+              </td>
               <td>
                 {
                   (
-                    parseFloat(item.value)
-                      * parseFloat(item.exchangeRates[item.currency].ask)
+                    parseFloat(expense.value)
+                      * parseFloat(expense.exchangeRates[expense.currency].ask)
                   ).toFixed(2)
                 }
               </td>
@@ -49,8 +55,8 @@ class ExpensesTable extends React.Component {
                 <button type="button">Editar</button>
                 <button
                   // https://stackoverflow.com/questions/39818569/pass-id-through-on-click-react-js
-                  // onClick={ () => this.handleClick(item.id) }
-                  onClick={ this.handleClick }
+                  onClick={ () => this.handleClick(expense.id) }
+                  // onClick={ this.handleClick }
                   type="button"
                   data-testid="delete-btn"
                 >
@@ -58,7 +64,7 @@ class ExpensesTable extends React.Component {
                 </button>
               </td>
             </tr>
-          ))}
+          )) }
         </tbody>
       </table>
     );
