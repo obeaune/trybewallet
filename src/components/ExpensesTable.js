@@ -1,8 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { deleteExpense } from '../actions/index';
 
 class ExpensesTable extends React.Component {
+  handleClick = ({ target }) => {
+    const { dispatchForDelete } = this.props;
+    dispatchForDelete(target.id);
+  };
+
   render() {
     const { expensesFromState } = this.props;
     return (
@@ -41,7 +47,15 @@ class ExpensesTable extends React.Component {
               <td>Real</td>
               <td>
                 <button type="button">Editar</button>
-                <button type="button">Excluir</button>
+                <button
+                  // https://stackoverflow.com/questions/39818569/pass-id-through-on-click-react-js
+                  // onClick={ () => this.handleClick(item.id) }
+                  onClick={ this.handleClick }
+                  type="button"
+                  data-testid="delete-btn"
+                >
+                  Excluir
+                </button>
               </td>
             </tr>
           ))}
@@ -55,8 +69,13 @@ const mapStateToProps = (state) => ({
   expensesFromState: state.wallet.expenses,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  dispatchForDelete: (id) => dispatch(deleteExpense(id)),
+});
+
 ExpensesTable.propTypes = {
   expensesFromState: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatchForDelete: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(ExpensesTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ExpensesTable);

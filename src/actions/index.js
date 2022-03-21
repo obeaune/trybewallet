@@ -2,6 +2,7 @@
 export const SEND_EMAIL = 'SEND_EMAIL';
 export const SEND_CURRENCIES = 'SEND_CURRENCIES';
 export const SEND_INFO_EXPENSES = 'SEND_INFO_EXPENSES';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 
 export const sendEmail = (email) => ({
   type: SEND_EMAIL,
@@ -28,4 +29,9 @@ export const actionThunk = (formData) => (async (dispatch) => {
   };
   // chamar o sendExpenses
   dispatch(sendExpenses(newExpenses));
+});
+
+export const deleteExpense = (id) => ({
+  type: DELETE_EXPENSE,
+  payload: id,
 });
