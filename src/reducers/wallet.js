@@ -1,4 +1,3 @@
-// Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
 import {
   SEND_INFO_EXPENSES,
   SEND_CURRENCIES,
