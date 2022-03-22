@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionThunk, sendCurrencies } from '../actions';
+import ExpensesTable from './ExpensesTable';
+import { actionThunk, sendCurrencies, editExpense } from '../actions';
+
+const alimentacao = 'Alimentação';
 
 class FormExpense extends Component {
   state = {
@@ -9,7 +12,10 @@ class FormExpense extends Component {
     description: '',
     currency: 'USD',
     method: 'Dinheiro',
-    tag: 'Alimentação',
+    tag: alimentacao,
+    // comentando o editWasCalled por que quebrava o teste 4 que esperava um obj sem essa chave.
+    // editWasCalled: false,
+    exchangeRates: {},
   };
 
   fetchKeysAPI = async () => {
@@ -44,11 +50,52 @@ class FormExpense extends Component {
       currency: '',
       method: '',
       tag: '',
+      // editWasCalled: false,
     });
   };
 
+  btnEdit = (expense) => {
+    this.setState({
+      id: expense.id,
+      value: expense.value,
+      description: expense.description,
+      currency: expense.currency,
+      method: expense.method,
+      editWasCalled: true,
+      exchangeRates: expense.exchangeRates,
+    });
+  }
+
+  handleClickEdit = () => {
+    const { dispatchForEdit } = this.props;
+    const { id, value,
+      description,
+      currency,
+      method,
+      tag,
+      exchangeRates,
+    } = this.state;
+    // dispatchForEdit: (expense) => dispatch(editExpense(expense))
+    dispatchForEdit({ id,
+      value,
+      description,
+      currency,
+      method,
+      tag,
+      exchangeRates,
+    });
+    this.setState({
+      value: 0,
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: alimentacao,
+      editWasCalled: false,
+    });
+  }
+
   render() {
-    const { value, description, currency, method, tag } = this.state;
+    const { value, description, currency, method, tag, editWasCalled } = this.state;
     const { currenciesFromState } = this.props;
     return (
       <div>
@@ -130,13 +177,25 @@ class FormExpense extends Component {
             </select>
           </label>
 
-          <button
-            type="submit"
-            onClick={ this.handleClick }
-          >
-            Adicionar despesa
-          </button>
+          { editWasCalled
+            ? (
+              <button
+                type="button"
+                onClick={ this.handleClickEdit }
+              >
+                Editar despesa
+              </button>
+            )
+            : (
+              <button
+                type="button"
+                onClick={ this.handleClick }
+              >
+                Adicionar despesa
+              </button>
+            )}
         </form>
+        <ExpensesTable btnEdit={ this.btnEdit } />
       </div>
     );
   }
@@ -149,13 +208,14 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   dispatchFormExpense: (formData) => dispatch(actionThunk(formData)),
   disptachFormCurrencies: (currencies) => dispatch(sendCurrencies(currencies)),
+  dispatchForEdit: (expense) => dispatch(editExpense(expense)),
 });
 
 FormExpense.propTypes = {
   dispatchFormExpense: PropTypes.func.isRequired,
   disptachFormCurrencies: PropTypes.func.isRequired,
+  dispatchForEdit: PropTypes.func.isRequired,
   currenciesFromState: PropTypes.arrayOf(PropTypes.string).isRequired,
-
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormExpense);

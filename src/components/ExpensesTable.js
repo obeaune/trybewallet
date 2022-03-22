@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { deleteExpense } from '../actions/index';
+import { deleteExpense, editExpense } from '../actions/index';
 
 class ExpensesTable extends React.Component {
   handleClick = (id) => {
@@ -10,7 +10,7 @@ class ExpensesTable extends React.Component {
   };
 
   render() {
-    const { expensesFromState } = this.props;
+    const { expensesFromState, btnEdit } = this.props;
     return (
       <table id="table">
         <thead>
@@ -52,11 +52,17 @@ class ExpensesTable extends React.Component {
               </td>
               <td>Real</td>
               <td>
-                <button type="button">Editar</button>
+                <button
+                  // https://stackoverflow.com/questions/39818569/pass-id-through-on-click-react-js
+                  onClick={ () => btnEdit(expense) }
+                  type="button"
+                  data-testid="edit-btn"
+                >
+                  Editar
+                </button>
                 <button
                   // https://stackoverflow.com/questions/39818569/pass-id-through-on-click-react-js
                   onClick={ () => this.handleClick(expense.id) }
-                  // onClick={ this.handleClick }
                   type="button"
                   data-testid="delete-btn"
                 >
@@ -77,11 +83,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchForDelete: (id) => dispatch(deleteExpense(id)),
+  dispatchForEdit: (expense) => dispatch(editExpense(expense)),
 });
 
 ExpensesTable.propTypes = {
   expensesFromState: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchForDelete: PropTypes.func.isRequired,
+  btnEdit: PropTypes.func.isRequired,
+  // dispatchForEdit: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpensesTable);
